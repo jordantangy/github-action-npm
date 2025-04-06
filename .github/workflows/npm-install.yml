@@ -20,3 +20,9 @@ jobs:
      run: jf npm-config --repo-resolve=jordanta-npm-virtual --repo-deploy=jordanta-npm-virtual
    - name: NPM install
      run: jf npm install react
+   - name: NPM build
+     run: jf npm ci  --build-name=$JF_BUILD_NAME --build-number=$JF_BUILD_NUMBER
+   - name: NPM publish
+     run: jf npm publish --build-name=$JF_BUILD_NAME --build-number=$JF_BUILD_NUMBER
+
+
