@@ -1,0 +1,22 @@
+name: JFrog-GitHub NPM Publish OIDC Integration
+on: workflow_dispatch
+permissions:
+  id-token: write
+jobs:
+ build:
+   runs-on: ubuntu-latest
+   steps:
+   # This action checks out the code from the repository
+   - name: Checkout
+     uses: actions/checkout@v4
+   - name: Setup JFrog CLI
+     uses: jfrog/setup-jfrog-cli@v4
+     env:
+          JF_URL: '${{ secrets.JF_URL }}'
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+   - name: NPM config
+     run: jf c add artifactory --url=$JFROG_URL --password=$JF_ACCESS_TOKEN
+   - name: NPM repo config
+     run: jf npm-config --repo-resolve=jordanta-npm-virtual --repo-deploy=jordanta-npm-virtual
+   - name: NPM install
+     run: jf npm install react
