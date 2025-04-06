@@ -1,0 +1,8 @@
+version: 1
+type: npm
+resolver:
+    repo: jordanta-npm-virtual
+    serverId: elina
+deployer:
+    repo: jordanta-npm-virtual
+    serverId: elina
