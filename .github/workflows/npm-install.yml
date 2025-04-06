@@ -19,8 +19,8 @@ jobs:
    - name: NPM repo config
      run: jf npm-config --repo-resolve=jordanta-npm-virtual --repo-deploy=jordanta-npm-virtual
    - name: NPM install
-     run: jf npm install react --build-name=jordanta-github-npm --build-number=1
+     run: jf npm install
    - name: NPM publish
-     run: jf npm publish --build-name=jordanta-github-npm --build-number=1
+     run: jf npm ci --build-name=jordanta-github-npm --build-number=1
 
 
