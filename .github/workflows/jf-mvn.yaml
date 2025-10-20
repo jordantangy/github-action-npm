@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Application
     container:
-      image: elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoav-rt:latest
+      image: elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoah-rt:latest
       credentials:
         username: ${{ secrets.JF_ACCESS_USER }}
         password: ${{ secrets.JF_ACCESS_TOKEN }}
