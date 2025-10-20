@@ -17,10 +17,10 @@ jobs:
         password: ${{ secrets.JF_ACCESS_TOKEN }}
 
     steps:
-    - name: Install Node.js
-      run: |
-        apt-get update
-        apt-get install -y nodejs npm
+      - name: Install Node.js
+        run: |
+          apt-get update
+          apt-get install -y nodejs npm
 
       - name: Install JFrog
         id: install-jf
