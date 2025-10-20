@@ -39,15 +39,15 @@ jobs:
 
       - name: Configure Maven for Artifactory inside container
         run: |
+          # Remove any leftover container from previous runs
+          docker rm -f jfrog-mvn-container || true
+
           docker run -d --name jfrog-mvn-container \
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
           elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoah-rt:latest \
           sleep infinity
           
-          # Remove any leftover container from previous runs
-          docker rm -f jfrog-mvn-container || true
-
           "
 
       - name: Build Maven project inside container
