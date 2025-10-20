@@ -12,9 +12,10 @@ jobs:
         username: ${{ secrets.JF_ACCESS_USER }}
         password: ${{ secrets.JF_ACCESS_TOKEN }}
     steps:
-      - name: Install JFrog
-        id: install-jf
-        uses: jfrog/setup-jfrog-cli@v4
+      - name: Install JFrog CLI manually
+        run: |
+          curl -fL https://install-cli.jfrog.io | sh
+          jf --version
         env:
           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
       - name: Ping JFrog
