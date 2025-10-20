@@ -11,17 +11,12 @@ jobs:
     name: Build Application
 
     container:
-      image: elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoah-rt:latest
+      image: elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-jordantest:latest
       credentials:
         username: ${{ secrets.JF_ACCESS_USER }}
         password: ${{ secrets.JF_ACCESS_TOKEN }}
 
     steps:
-      - name: Install Node.js
-        run: |
-          apt-get update
-          apt-get install -y nodejs npm
-
       - name: Install JFrog
         id: install-jf
         uses: jfrog/setup-jfrog-cli@v4.5.13
