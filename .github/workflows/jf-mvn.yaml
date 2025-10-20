@@ -7,7 +7,6 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     name: Build Application
     container:
       image: elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoah-rt:latest
