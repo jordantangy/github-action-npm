@@ -44,6 +44,10 @@ jobs:
           -w /workspace \
           elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoah-rt:latest \
           sleep infinity
+          
+          # Remove any leftover container from previous runs
+          docker rm -f jfrog-mvn-container || true
+
           "
 
       - name: Build Maven project inside container
@@ -52,3 +56,8 @@ jobs:
             cd /workspace &&
             /usr/src/app/jf mvn clean install --batch-mode --errors --show-version --project jt-project --threads 8 --build-name testjfmvn --build-number 1
           "
+      - name: Stop and remove container
+        if: always()
+        run: |
+          docker stop jfrog-mvn-container || true
+          docker rm jfrog-mvn-container || true
