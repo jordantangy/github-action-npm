@@ -38,9 +38,6 @@ jobs:
             --repo-resolve-snapshots jordanta-libs-snapshot \
             --repo-deploy-releases jordanta-libs-release \
             --repo-deploy-snapshots jordanta-libs-snapshot
-          whoami
-          cat /root/.jfrog/projects/maven.yaml
-          cat /root/.m2/settings.xml
 
       - name: Build Java Application
         id: run-jf
