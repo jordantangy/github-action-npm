@@ -39,15 +39,11 @@ jobs:
 
       - name: Configure Maven for Artifactory inside container
         run: |
-          docker exec jfrog-mvn-container bash -c "
-            /usr/src/app/jf mvn-config --global \
-              --repo-resolve-releases jordanta-libs-release \
-              --repo-resolve-snapshots jordanta-libs-snapshot \
-              --repo-deploy-releases jordanta-libs-release \
-              --repo-deploy-snapshots jordanta-libs-snapshot &&
-            whoami &&
-            cat /root/.jfrog/projects/maven.yaml || true &&
-            cat /root/.m2/settings.xml || true
+          docker run -d --name jfrog-mvn-container \
+          -v ${{ github.workspace }}:/workspace \
+          -w /workspace \
+          elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoah-rt:latest \
+          sleep infinity
           "
 
       - name: Build Maven project inside container
