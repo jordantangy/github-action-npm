@@ -1,0 +1,26 @@
+jobs:
+  build:
+    name: Build Application
+    container:
+      image: elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-cache-test:latest
+      credentials:
+        username: ${{ secrets.JF_ACCESS_USER }}
+        password: ${{ secrets.JF_ACCESS_TOKEN }}
+    steps:
+      - name: Install JFrog
+        id: install-jf
+        uses: jfrog/setup-jfrog-cli@v4.5.13
+        env:
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+      - name: Ping JFrog
+        run: jf rt ping
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+      - name: JFrog Config Java Application
+        id: config-jf
+        run: |
+          jf mvn-config --global --repo-resolve-releases jordant-libs-release --repo-resolve-snapshots jordant-libs-snapshots --repo-deploy-releases jordant-libs-release --repo-deploy-snapshots jordant-libs-snapshots
+          whoami
+          cat /root/.jfrog/projects/maven.yaml
+          cat /root/.m2/settings.xml
