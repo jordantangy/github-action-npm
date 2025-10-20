@@ -36,8 +36,6 @@ jobs:
         env:
           JF_URL: https://elinaf.jfrog.io
           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
-      - name: Ping JFrog from host
-        run: /usr/src/app/jf rt ping
 
       - name: Configure Maven for Artifactory inside container
         run: |
