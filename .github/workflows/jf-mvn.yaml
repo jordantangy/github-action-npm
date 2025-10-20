@@ -12,11 +12,15 @@ jobs:
         username: ${{ secrets.JF_ACCESS_USER }}
         password: ${{ secrets.JF_ACCESS_TOKEN }}
     steps:
-      - name: Print working directory
+      - name: Ping JFrog
+        run: ./jf rt ping
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+      - name: JFrog Config Java Application
+        id: config-jf
         run: |
-          echo "Current directory:"
-          pwd
-          echo "Home directory:"
-          echo $HOME
-          echo "List files in current dir:"
-          ls -la
+          ./jf mvn-config --global --repo-resolve-releases jordant-libs-release --repo-resolve-snapshots jordant-libs-snapshots --repo-deploy-releases jordant-libs-release --repo-deploy-snapshots jordant-libs-snapshots
+          whoami
+          cat /root/.jfrog/projects/maven.yaml
+          cat /root/.m2/settings.xml
