@@ -1,63 +1,36 @@
 name: JFrog-GitHub Maven
-
-on:
-  workflow_dispatch:
-
+on: workflow_dispatch
 permissions:
   id-token: write
-
 jobs:
   build:
+    runs-on: buntu-22.04-arm
     name: Build Application
-    runs-on: ubuntu-latest   
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Log in to Artifactory Docker registry
-        run: |
-          echo "${{ secrets.JF_ACCESS_TOKEN }}" | docker login elinaf.jfrog.io \
-            -u "${{ secrets.JF_ACCESS_USER }}" --password-stdin
-
-      - name: Pull custom Maven image
-        run: |
-          docker pull elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoah-rt:latest
-
-      - name: Start custom container (detached)
-        run: |
-          docker run -d --name jfrog-mvn-container \
-            -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
-            elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoah-rt:latest sleep infinity
-
-      - name: Install JFrog CLI on host
+    container:
+      image: elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoav-rt:latest
+      credentials:
+        username: ${{ secrets.JF_ACCESS_USER }}
+        password: ${{ secrets.JF_ACCESS_TOKEN }}
+      steps:
+      - name: Install JFrog
+        id: install-jf
         uses: jfrog/setup-jfrog-cli@v4.5.13
         env:
-          JF_URL: https://elinaf.jfrog.io
           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
-
-      - name: Configure Maven for Artifactory inside container
+      - name: Ping JFrog
+        run: jf rt ping
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+      - name: JFrog Config Java Application
+        id: config-jf
         run: |
-          # Remove any leftover container from previous runs
-          docker rm -f jfrog-mvn-container || true
-
-          docker run -d --name jfrog-mvn-container \
-          -v ${{ github.workspace }}:/workspace \
-          -w /workspace \
-          elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-yoah-rt:latest \
-          sleep infinity
-          
-          "
-
-      - name: Build Maven project inside container
+          jf mvn-config --global --repo-resolve-releases jordanta-libs-release --repo-resolve-snapshots jordanta-libs-snapshot --repo-deploy-releases jordanta-libs-release --repo-deploy-snapshots jordanta-libs-snapshot
+          whoami
+          cat /root/.jfrog/projects/maven.yaml
+          cat /root/.m2/settings.xml
+      - name: Build Java Application
+        id: run-jf
         run: |
-          docker exec jfrog-mvn-container bash -c "
-            cd /workspace &&
-            /usr/src/app/jf mvn clean install --batch-mode --errors --show-version --project jt-project --threads 8 --build-name testjfmvn --build-number 1
-          "
-      - name: Stop and remove container
-        if: always()
-        run: |
-          docker stop jfrog-mvn-container || true
-          docker rm jfrog-mvn-container || true
+          jf mvn clean install --batch-mode --errors --show-version --project $JF_PROJECT_KEY --threads 8 --build-name jf-mvn-test-build --build-number 1
+
