@@ -42,7 +42,7 @@ jobs:
       - name: Build Java Application
         id: run-jf
         run: |
-          jf mvn clean install --batch-mode --errors --show-version \
+          jf mvn clean install --debug --batch-mode --errors --show-version \
             --project jt-project \
             --threads 8 \
             --build-name jf-mvn-test-build \
