@@ -32,4 +32,4 @@ jobs:
 
       # 4. Optional: Build project
       - name: Build project
-        run: mvn clean install --debug --batch-mode --errors --show-versio
+        run: mvn clean install --debug --batch-mode --errors --show-version
