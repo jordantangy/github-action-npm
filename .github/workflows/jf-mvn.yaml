@@ -32,5 +32,5 @@ jobs:
 
       # 4. Optional: Build project
       - name: Build project
-        run: mvn -s /usr/share/maven/ref/settings-docker.xml clean install --batch-mode -DskipBootRepackage
+        run: mvn -s /usr/share/maven/ref/settings-docker.xml clean install  --debug --batch-mode --errors --show-version -DskipBootRepackage
 
