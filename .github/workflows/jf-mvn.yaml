@@ -1,7 +1,6 @@
-name: GitHub Maven
+name: JFrog-GitHub Maven
 
-on:
-  workflow_dispatch:
+on: workflow_dispatch
 
 permissions:
   id-token: write
@@ -11,26 +10,40 @@ jobs:
     runs-on: ubuntu-22.04-arm
     name: Build Application
 
-    # Pull container from Artifactory
     container:
-      image: elinaf.jfrog.io/jordanta-docker-local/mvn-test-4
+      image: elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-jordantest:latest
       credentials:
         username: ${{ secrets.JF_ACCESS_USER }}
         password: ${{ secrets.JF_ACCESS_TOKEN }}
 
     steps:
-      # 1. Checkout the repo
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Install JFrog
+        id: install-jf
+        uses: jfrog/setup-jfrog-cli@v4.5.13
+        env:
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
 
-      # 2. Optional: Set up JDK (if container doesn't have it)
-      #- name: Set up JDK
-      #  uses: actions/setup-java@v3
-      #  with:
-      #    distribution: temurin
-      #    java-version: 17
+      - name: Ping JFrog
+        run: jf rt ping
 
-      # 4. Optional: Build project
-      - name: Build project
-        run: mvn -s /usr/share/maven/ref/settings-docker.xml clean install  --debug --batch-mode --errors --show-version -DskipBootRepackage
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
 
+      - name: JFrog Config Java Application
+        id: config-jf
+        run: |
+          jf mvn-config --global \
+            --repo-resolve-releases jordanta-libs-release \
+            --repo-resolve-snapshots jordanta-libs-snapshot \
+            --repo-deploy-releases jordanta-libs-release \
+            --repo-deploy-snapshots jordanta-libs-snapshot
+
+      - name: Build Java Application
+        id: run-jf
+        run: |
+          jf mvn clean install --debug --batch-mode --errors --show-version \
+            --project jt-project \
+            --threads 8 \
+            --build-name jf-mvn-test-build \
+            --build-number 1
