@@ -49,7 +49,7 @@ jobs:
       - name: Build Java Application
         id: run-jf
         run: |
-          jf mvn clean install -Dmaven.repo.local=/tmp/m2 --batch-mode --errors --show-version \
+          jf mvn clean install -Dmaven.repo.local=/tmp/m2 --debug --batch-mode --errors --show-version \
             --project jt-project \
             --threads 8 \
             --build-name jf-mvn-test-build \
