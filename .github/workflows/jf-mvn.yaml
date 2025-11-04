@@ -30,12 +30,6 @@ jobs:
         id: checkout
         uses: actions/checkout@v3
 
-      - name: Prepare and clean Maven cache
-        run: |
-          mkdir -p /tmp/m2
-          cp -r /root/.m2/repository/* /tmp/m2/
-          find /tmp/m2 -type f -name "_remote.repositories" -delete
-          ls /tmp/m2/aopalliance/aopalliance/1.0/
 
       - name: JFrog Config Java Application
         id: config-jf
@@ -49,7 +43,7 @@ jobs:
       - name: Build Java Application
         id: run-jf
         run: |
-          jf mvn clean install -Dmaven.repo.local=/tmp/m2 --debug --batch-mode --errors --show-version \
+          jf mvn clean install --debug --batch-mode --errors --show-version \
             --project jt-project \
             --threads 8 \
             --build-name jf-mvn-test-build \
