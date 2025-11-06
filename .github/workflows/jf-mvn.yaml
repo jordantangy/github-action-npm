@@ -13,7 +13,7 @@ jobs:
 
     # Pull container from Artifactory
     container:
-      image: elinaf.jfrog.io/jordanta-docker-local/mvn-only:latest
+      image: elinaf.jfrog.io/jordanta-docker-local/jfrog-mvn-jordantest
       credentials:
         username: ${{ secrets.JF_ACCESS_USER }}
         password: ${{ secrets.JF_ACCESS_TOKEN }}
